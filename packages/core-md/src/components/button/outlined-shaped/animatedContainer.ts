@@ -8,46 +8,36 @@
 import {
   ButtonProps,
   ComponentThemeGetter,
-  DefaultView,
-  InteractionType,
-  isTouchDevice,
-  SurfacePropsBase,
+  getColor,
+  suppressPressedState,
+  SurfaceProps,
   SurfaceTheme,
   ViewStyleGetter,
 } from '@reflex-ui/core';
+import {
+  createAnimatedRippleView,
+  getSurfaceRippleColor,
+} from '@reflex-ui/ripple-md';
 
-import { getButtonRippleColor } from '../getButtonRippleColor';
-import { withRippleEffect } from '../withRippleEffect';
+import { getAllVariantsButtonContainerProps } from '../all-variants/container';
 import { getOutlinedShapedButtonContainerStyle } from './container';
 
 export const getAnimatedOutlinedShapedButtonContainerStyle: ViewStyleGetter<
-  SurfacePropsBase
-> = props => {
-  const updatedProps =
-    props.interactionState.type === InteractionType.Pressed
-      ? {
-          // tslint:disable-next-line:ter-indent
-          ...props,
-          // tslint:disable-next-line:ter-indent
-          interactionState: {
-            ...props.interactionState,
-            type: isTouchDevice
-              ? InteractionType.Enabled
-              : InteractionType.Hovered,
-          },
-          // tslint:disable-next-line:ter-indent
-        }
-      : props;
+  SurfaceProps
+> = props => ({
+  ...getOutlinedShapedButtonContainerStyle(props),
+  backgroundColor: getColor(suppressPressedState(props)),
+});
 
-  return getOutlinedShapedButtonContainerStyle(updatedProps);
-};
+const AnimatedRippleView = createAnimatedRippleView<SurfaceProps, SurfaceTheme>(
+  getSurfaceRippleColor,
+);
 
 export const getAnimatedOutlinedShapedButtonSurfaceTheme: ComponentThemeGetter<
   ButtonProps,
   SurfaceTheme
 > = () => ({
-  component: withRippleEffect({
-    getRippleColor: getButtonRippleColor,
-  })(DefaultView),
+  getComponent: () => AnimatedRippleView,
+  getProps: getAllVariantsButtonContainerProps,
   getStyle: getAnimatedOutlinedShapedButtonContainerStyle,
 });

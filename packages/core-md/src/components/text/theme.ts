@@ -6,24 +6,28 @@
  */
 
 import {
+  BuiltInSimpleComponentTheme,
+  extractFlexboxStyle,
   FontWeight,
   getFontWeight,
   getOnColor,
   getSizedMarginStyle,
   getSizedPaddingStyle,
-  isWeb,
-  RfxTextProps,
+  RfxTextPropsBase,
   RfxTextVariantsTheme,
-  TextStyleGetter,
 } from '@reflex-ui/core';
-import { Platform, TextStyle } from 'react-native';
+import { Platform, TextProps, TextStyle } from 'react-native';
 
-import { getFlexboxStyle } from '../../flexbox/getFlexboxStyle';
 import { sizedSpacing } from '../../spacing/sizedSpacing';
 import { getFontFamily } from './getFontFamily';
 
-export const getCommonRfxTextStyle: TextStyleGetter<RfxTextProps> = props => ({
-  ...getFlexboxStyle(props),
+export const getCommonRfxTextStyle = <
+  Props extends RfxTextPropsBase<Props, Theme>,
+  Theme extends BuiltInSimpleComponentTheme<Props, TextProps, TextStyle>
+>(
+  props: Props,
+): TextStyle => ({
+  ...extractFlexboxStyle(props),
   ...getSizedMarginStyle(sizedSpacing)(props),
   ...getSizedPaddingStyle(sizedSpacing)(props),
   color: getOnColor(props),
@@ -38,16 +42,6 @@ export const getCommonRfxTextStyle: TextStyleGetter<RfxTextProps> = props => ({
 });
 
 export const rfxTextVariantsTheme: RfxTextVariantsTheme = {
-  appBarTitle: {
-    getStyle: (props): TextStyle => ({
-      ...getCommonRfxTextStyle(props),
-      fontSize: 20,
-      fontWeight: getFontWeight(FontWeight.Medium),
-      letterSpacing: 0.0075,
-      marginTop: isWeb ? -1 : 0,
-      overflow: 'hidden',
-    }),
-  },
   caption: {
     getStyle: props => ({
       ...getCommonRfxTextStyle(props),

@@ -6,34 +6,34 @@
  */
 
 import {
-  InteractionType,
   Size,
-  SurfacePropsBase,
+  SurfaceProps,
   ViewPropsGetter,
   ViewStyleGetter,
 } from '@reflex-ui/core';
-import { Platform } from 'react-native';
+import { getElevationStyles } from '@reflex-ui/elevation-md';
+
+import {
+  getCommonTouchableSurfaceSurfaceProps,
+  getCommonTouchableSurfaceSurfaceStyle,
+} from '../../touchable-surface/theme';
 
 export const getAllVariantsButtonContainerProps: ViewPropsGetter<
-  SurfacePropsBase
-> = () => ({
-  pointerEvents: 'box-only',
+  SurfaceProps
+> = props => ({
+  ...getCommonTouchableSurfaceSurfaceProps(props),
 });
 
 export const getAllVariantsButtonContainerStyle: ViewStyleGetter<
-  SurfacePropsBase
+  SurfaceProps
 > = props => ({
+  ...getCommonTouchableSurfaceSurfaceStyle(props),
   alignItems: 'center',
   borderRadius: props.size === Size.XL || props.size === Size.XXL ? 6 : 4,
   flexDirection: 'row',
   justifyContent: 'center',
-  ...Platform.select({
-    web: {
-      cursor:
-        props.interactionState.type === InteractionType.Disabled
-          ? 'default'
-          : 'pointer',
-      outlineStyle: 'none',
-    },
-  }),
+  ...(props.elevation !== 0 &&
+    props.elevation !== undefined &&
+    props.elevation !== null &&
+    getElevationStyles(props.elevation)),
 });

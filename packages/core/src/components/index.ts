@@ -6,21 +6,25 @@
  */
 
 export * from './app-bar';
+export * from './avatar';
+export * from './avatar-image';
+export * from './avatar-overlay-surface';
 export * from './BuiltInSimpleComponentProps';
 export * from './button';
 export * from './ComponentChildrenProps';
 export * from './ComponentsTheme';
-export * from './ComponentsThemeContext';
 export * from './ComponentThemeGetter';
 export * from './ComponentThemeProps';
 export * from './getPropsFromTheme';
 export * from './getStyleFromTheme';
+export * from './image';
 export * from './isValidStyle';
 export * from './list';
 export * from './list-item';
 export * from './mergeStyles';
 export * from './mergeThemeAndPatchTheme';
 export * from './mergeThemes';
+export * from './overlay-surface';
 export * from './processChildren';
 export * from './processComponent';
 export * from './processComponentProps';

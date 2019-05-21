@@ -6,57 +6,90 @@
  */
 
 import {
-  DefaultView,
-  InteractionType,
-  isTouchDevice,
-  SurfacePropsBase,
+  getColor,
+  suppressPressedState,
+  SurfaceProps,
+  SurfaceTheme,
   TouchableSurfaceTheme,
+  TouchableSurfaceVariantsTheme,
   ViewStyleGetter,
 } from '@reflex-ui/core';
+import {
+  createAnimatedRippleView,
+  getSurfaceRippleColor,
+} from '@reflex-ui/ripple-md';
 import merge from 'lodash/merge';
 
-import { getButtonRippleColor } from '../button/getButtonRippleColor';
-import { withRippleEffect } from '../button/withRippleEffect';
 import {
-  getTouchableSurfaceSurfaceStyle,
-  touchableSurfaceTheme,
+  defaultTouchableSurfaceTheme,
+  getCommonTouchableSurfaceSurfaceProps,
+  getCommonTouchableSurfaceSurfaceStyle,
+  getOverlayTouchableSurfaceSurfaceStyle,
+  overlayTouchableSurfaceTheme,
 } from './theme';
 
-export const getAnimatedTouchableSurfaceSurfaceStyle: ViewStyleGetter<
-  SurfacePropsBase
-> = props => {
-  const updatedProps =
-    props.interactionState.type === InteractionType.Pressed
-      ? {
-          // tslint:disable-next-line:ter-indent
-          ...props,
-          // tslint:disable-next-line:ter-indent
-          interactionState: {
-            ...props.interactionState,
-            type: isTouchDevice
-              ? InteractionType.Enabled
-              : InteractionType.Hovered,
-          },
-          // tslint:disable-next-line:ter-indent
-        }
-      : props;
+const AnimatedRippleView = createAnimatedRippleView<SurfaceProps, SurfaceTheme>(
+  getSurfaceRippleColor,
+);
 
-  return getTouchableSurfaceSurfaceStyle(updatedProps);
-};
+export const getAnimatedCommonTouchableSurfaceSurfaceStyle: ViewStyleGetter<
+  SurfaceProps
+> = props => ({
+  ...getCommonTouchableSurfaceSurfaceStyle(props),
+  backgroundColor: getColor(suppressPressedState(props)),
+});
 
-export const partialAnimatedTouchableSurfaceTheme: Partial<
+export const getAnimatedOverlayTouchableSurfaceSurfaceStyle: ViewStyleGetter<
+  SurfaceProps
+> = props => ({
+  ...getOverlayTouchableSurfaceSurfaceStyle(props),
+  backgroundColor: getColor(suppressPressedState(props)),
+});
+
+export const partialAnimatedDefaultTouchableSurfaceTheme: Partial<
   TouchableSurfaceTheme
 > = {
   surface: () => ({
-    component: withRippleEffect({
-      getRippleColor: getButtonRippleColor,
-    })(DefaultView),
-    getStyle: getAnimatedTouchableSurfaceSurfaceStyle,
+    getComponent: () => AnimatedRippleView,
+    getProps: getCommonTouchableSurfaceSurfaceProps,
+    getStyle: getAnimatedCommonTouchableSurfaceSurfaceStyle,
   }),
 };
 
-export const animatedTouchableSurfaceTheme: TouchableSurfaceTheme = merge<
+export const partialAnimatedOverlayTouchableSurfaceTheme: Partial<
+  TouchableSurfaceTheme
+> = {
+  surface: () => ({
+    getComponent: () => AnimatedRippleView,
+    getProps: getCommonTouchableSurfaceSurfaceProps,
+    getStyle: getAnimatedOverlayTouchableSurfaceSurfaceStyle,
+  }),
+};
+
+// tslint:disable-next-line:max-line-length
+export const animatedDefaultTouchableSurfaceTheme: TouchableSurfaceTheme = merge<
   {},
   TouchableSurfaceTheme,
   Partial<TouchableSurfaceTheme>
->({}, touchableSurfaceTheme, partialAnimatedTouchableSurfaceTheme);
+>(
+  {},
+  defaultTouchableSurfaceTheme,
+  partialAnimatedDefaultTouchableSurfaceTheme,
+);
+
+// tslint:disable-next-line:max-line-length
+export const animatedOverlayTouchableSurfaceTheme: TouchableSurfaceTheme = merge<
+  {},
+  TouchableSurfaceTheme,
+  Partial<TouchableSurfaceTheme>
+>(
+  {},
+  overlayTouchableSurfaceTheme,
+  partialAnimatedOverlayTouchableSurfaceTheme,
+);
+
+// tslint:disable-next-line:max-line-length
+export const animatedTouchableSurfaceVariantsTheme: TouchableSurfaceVariantsTheme = {
+  default: animatedDefaultTouchableSurfaceTheme,
+  overlay: animatedOverlayTouchableSurfaceTheme,
+};

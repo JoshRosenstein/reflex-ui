@@ -22,16 +22,17 @@ import {
   Headline6,
   isWeb,
   JustifyContent,
-  PaletteContext,
+  PaletteColor,
   Paragraph1,
   Paragraph2,
   Row,
   Screen,
   Size,
   Surface,
+  usePalette,
 } from '@reflex-ui/core';
 import { MenuIcon } from '@reflex-ui/icons-md';
-import React, { useContext } from 'react';
+import React from 'react';
 import { ScrollView } from 'react-native';
 
 import { ButtonCollectionProps } from './ButtonCollectionProps';
@@ -43,6 +44,8 @@ const onButtonPress = () => {
 
 export interface CustomButtonCollection {
   readonly getPatchTheme?: ComponentThemeGetter<ButtonProps, ButtonTheme>;
+  readonly invertColor?: boolean;
+  readonly paletteColor?: PaletteColor;
   readonly title: string;
   readonly variant: ButtonVariant;
 }
@@ -62,7 +65,7 @@ const ButtonShowcaseScreen: React.SFC<ButtonShowcaseScreenProps> = ({
   title,
   variant,
 }): JSX.Element => {
-  const palette = useContext(PaletteContext);
+  const { palette } = usePalette();
   const colors = [
     {
       color: palette.primary,
@@ -258,8 +261,9 @@ const ButtonShowcaseScreen: React.SFC<ButtonShowcaseScreenProps> = ({
                         </Paragraph1>
                         <ButtonCollection
                           getPatchTheme={custom.getPatchTheme}
+                          invertColor={custom.invertColor}
                           onPress={onButtonPress}
-                          paletteColor={palette.primary}
+                          paletteColor={custom.paletteColor || palette.primary}
                           variant={custom.variant}
                         />
                       </Surface>

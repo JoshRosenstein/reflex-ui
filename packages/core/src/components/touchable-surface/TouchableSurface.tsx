@@ -5,23 +5,20 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import React, { forwardRef, Ref, useContext } from 'react';
+import React, { forwardRef, Ref } from 'react';
 import { View } from 'react-native';
 
 import { MissingComponentThemeError } from '../../errors';
-import { InteractionStateContext } from '../../interaction';
+import { InteractionStateProvider } from '../../interaction';
 import { useInteraction } from '../../interaction/useInteraction';
 import { useOnLayout } from '../../responsiveness/useOnLayout';
 import { filterOutInteractionProps } from '../../utils/props';
-import { ComponentsTheme } from '../ComponentsTheme';
-import { ComponentsThemeContext } from '../ComponentsThemeContext';
+import { useComponentsTheme } from '../ComponentsTheme';
 import { processComponent } from '../processComponent';
 import { processComponentProps } from '../processComponentProps';
 import { processThemeAndStyleProps } from '../processThemeAndStyleProps';
 import { Surface } from '../surface/Surface';
 import { SurfacePropsOptional } from '../surface/SurfaceProps';
-// tslint:disable-next-line:max-line-length
-import { useDefaultSurfacePropsBase } from '../surface/useDefaultSurfacePropsBase';
 // tslint:disable-next-line:max-line-length
 import { renderTouchableComponent } from '../touchable/renderTouchableComponent';
 import {
@@ -29,6 +26,9 @@ import {
   TouchableSurfacePropsOptional,
 } from './TouchableSurfaceProps';
 import { TouchableSurfaceTheme } from './TouchableSurfaceTheme';
+import { TouchableSurfaceVariant } from './TouchableSurfaceVariant';
+// tslint:disable-next-line:max-line-length
+import { useDefaultTouchableSurfaceProps } from './useDefaultTouchableSurfaceProps';
 
 export const extractSurfacePropsFromTouchableSurfaceProps = (
   props: TouchableSurfaceProps,
@@ -50,29 +50,34 @@ export const extractSurfacePropsFromTouchableSurfaceProps = (
   return surfaceProps;
 };
 
-const getTheme = (
-  props: TouchableSurfacePropsOptional,
-  componentsTheme: ComponentsTheme,
+const useTheme = (
+  theme?: TouchableSurfaceTheme,
+  variant?: TouchableSurfaceVariant,
 ): TouchableSurfaceTheme => {
-  if (props.theme !== undefined && props.theme !== null) return props.theme;
+  const { componentsTheme } = useComponentsTheme();
+
+  if (theme !== undefined && theme !== null) return theme;
   if (
     componentsTheme.touchableSurface === undefined ||
     componentsTheme.touchableSurface === null
   ) {
     throw new MissingComponentThemeError('<TouchableSurface>');
   }
-  return componentsTheme.touchableSurface;
+
+  return componentsTheme.touchableSurface[
+    variant || TouchableSurfaceVariant.Default
+  ];
 };
 
 let TouchableSurface: React.ComponentType<
   TouchableSurfacePropsOptional
 > = forwardRef((props: TouchableSurfacePropsOptional, ref: Ref<View>) => {
-  const componentsTheme = useContext(ComponentsThemeContext);
-  const theme = getTheme(props, componentsTheme);
+  const variant = props.variant || TouchableSurfaceVariant.Default;
+  const theme = useTheme(props.theme, variant);
 
   let newProps: TouchableSurfaceProps = {
-    ...useDefaultSurfacePropsBase(props),
-    theme,
+    ...useDefaultTouchableSurfaceProps(props, theme),
+    variant: props.variant || TouchableSurfaceVariant.Default,
   };
   newProps = { ...newProps, ...useInteraction(newProps) };
   newProps = { ...newProps, ...useOnLayout(newProps) };
@@ -80,20 +85,53 @@ let TouchableSurface: React.ComponentType<
   newProps = processThemeAndStyleProps(newProps, newProps.theme.touchable);
 
   const Touchable =
-    newProps.theme.touchable && newProps.theme.touchable.component;
+    newProps.theme.touchable &&
+    newProps.theme.touchable.getComponent &&
+    newProps.theme.touchable.getComponent(newProps);
 
+  /*
   const surfaceProps = extractSurfacePropsFromTouchableSurfaceProps(newProps);
+  */
+  const {
+    children,
+    ...surfaceProps
+  } = extractSurfacePropsFromTouchableSurfaceProps(newProps);
+  /*
+  if (
+    props.variant === undefined ||
+    props.variant === null ||
+    props.variant === TouchableSurfaceVariant.Default
+  ) {
+    surfaceProps = {
+      ...surfaceProps,
+      children,
+    };
+  }
+  */
   const surface = (
-    <Surface {...surfaceProps} ref={ref}>
-      {newProps.children}
-    </Surface>
+    <Surface
+      {...surfaceProps}
+      {...variant === TouchableSurfaceVariant.Default && { children }}
+      ref={ref}
+    />
   );
-  newProps = { ...newProps, children: surface };
+
+  if (variant === TouchableSurfaceVariant.Default) {
+    newProps = { ...newProps, children: surface };
+  } else {
+    const Container = (
+      <View>
+        {children}
+        {surface}
+      </View>
+    );
+    newProps = { ...newProps, children: Container };
+  }
 
   return (
-    <InteractionStateContext.Provider value={newProps.interactionState}>
+    <InteractionStateProvider value={newProps.interactionState}>
       {renderTouchableComponent(newProps, Touchable)}
-    </InteractionStateContext.Provider>
+    </InteractionStateProvider>
   );
 });
 

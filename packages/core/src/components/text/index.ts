@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-export * from './AppBarTitle';
 export * from './Caption';
 export * from './FontWeight';
 export * from './FontWeightValues';
@@ -21,6 +20,8 @@ export * from './Paragraph1';
 export * from './Paragraph2';
 export * from './renderRfxTextComponent';
 export * from './renderTextComponent';
+export * from './RfxSizedTextProps';
+export * from './RfxSizedTextTheme';
 export * from './RfxTextProps';
 export * from './RfxTextTheme';
 export * from './RfxTextVariantsTheme';
@@ -29,4 +30,4 @@ export * from './Subtitle2';
 export * from './TextPropsGetter';
 export * from './TextStyleGetter';
 export * from './TextTheme';
-export * from './useDefaultRfxTextPropsBase';
+export * from './useDefaultRfxTextProps';

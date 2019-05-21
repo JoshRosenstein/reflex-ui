@@ -9,10 +9,18 @@ import {
   AppBarProps,
   AppBarTheme,
   AppBarVariantsTheme,
-  SurfacePropsBase,
+  FontWeight,
+  getFontWeight,
+  isWeb,
+  RfxTextProps,
+  SurfaceProps,
+  TextStyleGetter,
   ViewStyleGetter,
 } from '@reflex-ui/core';
+import { getElevationStyles } from '@reflex-ui/elevation-md';
 import merge from 'lodash/merge';
+
+import { getCommonRfxTextStyle } from '../text/theme';
 
 /*
  * COMMON STYLES
@@ -28,14 +36,16 @@ export const getCommonAppBarCenterAreaStyle: ViewStyleGetter<
 });
 
 export const getCommonAppBarSurfaceStyle: ViewStyleGetter<
-  SurfacePropsBase
-> = () => ({
+  SurfaceProps
+> = props => ({
   alignItems: 'center',
   borderRadius: 0,
   flexDirection: 'row',
-  overflow: 'hidden',
   paddingHorizontal: 6,
   paddingVertical: 6,
+  zIndex: 1,
+  ...(props.elevation !== 0 &&
+    getElevationStyles(props.elevation || 4, props.interactionState.type)),
 });
 
 export const getCommonAppBarLeadingAreaStyle: ViewStyleGetter<
@@ -51,12 +61,23 @@ export const getCommonAppBarTrailingAreaStyle: ViewStyleGetter<
   justifyContent: 'flex-end',
 });
 
+export const getCommonAppBarTitleStyle: TextStyleGetter<
+  RfxTextProps
+> = props => ({
+  ...getCommonRfxTextStyle(props),
+  fontSize: 20,
+  fontWeight: getFontWeight(FontWeight.Medium),
+  letterSpacing: 0.0075,
+  marginTop: isWeb ? -1 : 0,
+  overflow: 'hidden',
+});
+
 /*
  * AppBarVariant.DEFAULT
  */
 
 export const getDefaultAppBarSurfaceStyle: ViewStyleGetter<
-  SurfacePropsBase
+  SurfaceProps
 > = props => ({
   ...getCommonAppBarSurfaceStyle(props),
   flexWrap: 'nowrap',
@@ -74,6 +95,9 @@ export const defaultAppBarTheme: AppBarTheme = {
   surface: () => ({
     getStyle: getDefaultAppBarSurfaceStyle,
   }),
+  title: {
+    getStyle: getCommonAppBarTitleStyle,
+  },
   trailingArea: {
     getStyle: getCommonAppBarTrailingAreaStyle,
   },
@@ -84,7 +108,7 @@ export const defaultAppBarTheme: AppBarTheme = {
  */
 
 export const getDenseAppBarSurfaceStyle: ViewStyleGetter<
-  SurfacePropsBase
+  SurfaceProps
 > = props => ({
   ...getCommonAppBarSurfaceStyle(props),
   height: 48,
@@ -101,6 +125,9 @@ export const denseAppBarTheme: AppBarTheme = {
   surface: () => ({
     getStyle: getDenseAppBarSurfaceStyle,
   }),
+  title: {
+    getStyle: getCommonAppBarTitleStyle,
+  },
   trailingArea: {
     getStyle: getCommonAppBarTrailingAreaStyle,
   },
@@ -119,7 +146,7 @@ export const getProminentAppBarCenterAreaStyle: ViewStyleGetter<
 });
 
 export const getProminentAppBarSurfaceStyle: ViewStyleGetter<
-  SurfacePropsBase
+  SurfaceProps
 > = props => ({
   ...getCommonAppBarSurfaceStyle(props),
   alignItems: 'flex-start',
@@ -136,6 +163,9 @@ export const prominentAppBarTheme: AppBarTheme = {
   surface: () => ({
     getStyle: getProminentAppBarSurfaceStyle,
   }),
+  title: {
+    getStyle: getCommonAppBarTitleStyle,
+  },
   trailingArea: {
     getStyle: getCommonAppBarTrailingAreaStyle,
   },
@@ -146,7 +176,7 @@ export const prominentAppBarTheme: AppBarTheme = {
  */
 
 export const getProminentDenseAppBarSurfaceStyle: ViewStyleGetter<
-  SurfacePropsBase
+  SurfaceProps
 > = props => ({
   ...getProminentAppBarSurfaceStyle(props),
   height: 98,

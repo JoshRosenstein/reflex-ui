@@ -12,11 +12,11 @@ export interface FlexColorFactoryInput {
   readonly containedColor: LayeredColor;
   readonly containedColorDisabled: LayeredColor;
   readonly containedColorFactory: LayeredColorFactory;
-  readonly containedInvertedColor: LayeredColor;
+  readonly containedInvertedColor?: LayeredColor;
   readonly containedInvertedColorDisabled: LayeredColor;
-  readonly uncontainedColor: LayeredColor;
+  readonly uncontainedColor?: LayeredColor;
   readonly uncontainedColorDisabled: LayeredColor;
   readonly uncontainedColorFactory: LayeredColorFactory;
-  readonly uncontainedInvertedColor: LayeredColor;
+  readonly uncontainedInvertedColor?: LayeredColor;
   readonly uncontainedInvertedColorDisabled: LayeredColor;
 }

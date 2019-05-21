@@ -6,11 +6,14 @@
  */
 
 export * from './app-bar';
+export * from './avatar';
+export * from './avatar-image';
 export * from './button';
 export * from './icon';
+export * from './image';
 export * from './list';
 export * from './svg';
 export * from './surface';
-export * from './test';
 export * from './text';
 export * from './touchable-surface';
+export * from './view';

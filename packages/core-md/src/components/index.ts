@@ -7,12 +7,17 @@
 
 export * from './animatedMaterialDesignTheme';
 export * from './app-bar';
+export * from './avatar';
+export * from './avatar-image';
+export * from './avatar-overlay-surface';
 export * from './button';
 export * from './createAnimatedComponentsTheme';
 export * from './createComponentsTheme';
+export * from './image';
 export * from './list';
 export * from './list-item';
 export * from './materialDesignTheme';
+export * from './overlay-surface';
 export * from './screen';
 export * from './surface';
 export * from './svg';

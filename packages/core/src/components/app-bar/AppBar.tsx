@@ -5,13 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import React, { forwardRef, Ref, useContext } from 'react';
+import React, { forwardRef, Ref } from 'react';
 import { View, ViewProps } from 'react-native';
 
 import { MissingComponentThemeError } from '../../errors';
 import { useOnLayout } from '../../responsiveness/useOnLayout';
-import { ComponentsTheme } from '../ComponentsTheme';
-import { ComponentsThemeContext } from '../ComponentsThemeContext';
+import { useComponentsTheme } from '../ComponentsTheme';
 import { getPropsFromTheme } from '../getPropsFromTheme';
 import { getStyleFromTheme } from '../getStyleFromTheme';
 import { processComponent } from '../processComponent';
@@ -22,7 +21,7 @@ import { renderViewComponent } from '../view/renderViewComponent';
 import { AppBarProps, AppBarPropsOptional } from './AppBarProps';
 import { AppBarTheme } from './AppBarTheme';
 import { AppBarVariant } from './AppBarVariant';
-import { useDefaultAppBarPropsBase } from './useDefaultAppBarPropsBase';
+import { useDefaultAppBarProps } from './useDefaultAppBarProps';
 
 export const extractSurfacePropsFromAppBarProps = (
   props: AppBarProps,
@@ -60,7 +59,10 @@ export const renderAppBarCenterArea = (props: AppBarProps): React.ReactNode => {
     style: getStyleFromTheme(props, theme.centerArea),
   };
 
-  const Component = theme.centerArea && theme.centerArea.component;
+  const Component =
+    theme.centerArea &&
+    theme.centerArea.getComponent &&
+    theme.centerArea.getComponent(props);
   return renderViewComponent({ props, viewProps, Component });
 };
 
@@ -83,7 +85,10 @@ export const renderAppBarLeadingArea = (
     style: getStyleFromTheme(props, theme.leadingArea),
   };
 
-  const Component = theme.leadingArea && theme.leadingArea.component;
+  const Component =
+    theme.leadingArea &&
+    theme.leadingArea.getComponent &&
+    theme.leadingArea.getComponent(props);
   return renderViewComponent({ props, viewProps, Component });
 };
 
@@ -107,31 +112,32 @@ export const renderAppBarTrailingArea = (
     style: getStyleFromTheme(props, theme.trailingArea),
   };
 
-  const Component = theme.trailingArea && theme.trailingArea.component;
+  const Component =
+    theme.trailingArea &&
+    theme.trailingArea.getComponent &&
+    theme.trailingArea.getComponent(props);
   return renderViewComponent({ props, viewProps, Component });
 };
 
-const getTheme = (
-  props: AppBarPropsOptional,
-  componentsTheme: ComponentsTheme,
+const useTheme = (
+  theme?: AppBarTheme,
+  variant?: AppBarVariant,
 ): AppBarTheme => {
-  if (props.theme !== undefined && props.theme !== null) return props.theme;
+  const { componentsTheme } = useComponentsTheme();
+
+  if (theme !== undefined && theme !== null) return theme;
   if (componentsTheme.appBar === undefined || componentsTheme.appBar === null) {
     throw new MissingComponentThemeError('<AppBar>');
   }
-  const variant: AppBarVariant = props.variant || AppBarVariant.Default;
-  return componentsTheme.appBar[variant];
+
+  return componentsTheme.appBar[variant || AppBarVariant.Default];
 };
 
 let AppBar: React.ComponentType<AppBarPropsOptional> = forwardRef(
   (props: AppBarPropsOptional, ref: Ref<View>) => {
-    const componentsTheme = useContext(ComponentsThemeContext);
-    const theme = getTheme(props, componentsTheme);
+    const theme = useTheme(props.theme, props.variant);
 
-    let newProps: AppBarProps = {
-      ...useDefaultAppBarPropsBase(props),
-      theme,
-    };
+    let newProps: AppBarProps = useDefaultAppBarProps(props, theme);
     newProps = { ...newProps, ...useOnLayout(newProps) };
     newProps = processComponentProps(newProps);
 

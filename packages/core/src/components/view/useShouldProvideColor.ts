@@ -5,16 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { useContext } from 'react';
+import { PaletteColor, usePaletteColor } from '../../color/PaletteColor';
 
-import { PaletteColorContext } from '../../color/PaletteColorContext';
-import { RfxViewPropsBaseOptional } from './RfxViewProps';
-
-export const useShouldProvideColor = (
-  props: RfxViewPropsBaseOptional,
-): boolean => {
-  const paletteColorFromCtx = useContext(PaletteColorContext);
-  const { paletteColor } = props;
+export const useShouldProvideColor = (paletteColor?: PaletteColor): boolean => {
+  const paletteColorCtxValue = usePaletteColor();
+  const paletteColorFromCtx =
+    paletteColorCtxValue && paletteColorCtxValue.paletteColor;
   return (
     paletteColor !== undefined &&
     paletteColor !== null &&

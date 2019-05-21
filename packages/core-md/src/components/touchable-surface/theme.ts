@@ -7,14 +7,26 @@
 
 import {
   InteractionType,
-  SurfacePropsBase,
+  SurfaceProps,
   TouchableSurfaceTheme,
+  TouchableSurfaceVariantsTheme,
+  ViewPropsGetter,
   ViewStyleGetter,
 } from '@reflex-ui/core';
-import { Platform } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
-export const getTouchableSurfaceSurfaceStyle: ViewStyleGetter<
-  SurfacePropsBase
+/*
+ * Common Styles
+ */
+
+export const getCommonTouchableSurfaceSurfaceProps: ViewPropsGetter<
+  SurfaceProps
+> = () => ({
+  pointerEvents: 'box-only',
+});
+
+export const getCommonTouchableSurfaceSurfaceStyle: ViewStyleGetter<
+  SurfaceProps
 > = props => ({
   borderRadius: 0,
   ...Platform.select({
@@ -28,8 +40,40 @@ export const getTouchableSurfaceSurfaceStyle: ViewStyleGetter<
   }),
 });
 
-export const touchableSurfaceTheme: TouchableSurfaceTheme = {
+/*
+ * TouchableSurfaceVariant.Default
+ */
+
+export const defaultTouchableSurfaceTheme: TouchableSurfaceTheme = {
   surface: () => ({
-    getStyle: getTouchableSurfaceSurfaceStyle,
+    getProps: getCommonTouchableSurfaceSurfaceProps,
+    getStyle: getCommonTouchableSurfaceSurfaceStyle,
   }),
+};
+
+/*
+ * TouchableSurfaceVariant.Overlay
+ */
+
+export const getOverlayTouchableSurfaceSurfaceStyle: ViewStyleGetter<
+  SurfaceProps
+> = props => ({
+  ...getCommonTouchableSurfaceSurfaceStyle(props),
+  ...StyleSheet.absoluteFillObject,
+});
+
+export const overlayTouchableSurfaceTheme: TouchableSurfaceTheme = {
+  surface: () => ({
+    getProps: getCommonTouchableSurfaceSurfaceProps,
+    getStyle: getOverlayTouchableSurfaceSurfaceStyle,
+  }),
+};
+
+/*
+ * TouchableSurfaceVariantsTheme
+ */
+
+export const touchableSurfaceVariantsTheme: TouchableSurfaceVariantsTheme = {
+  default: defaultTouchableSurfaceTheme,
+  overlay: overlayTouchableSurfaceTheme,
 };

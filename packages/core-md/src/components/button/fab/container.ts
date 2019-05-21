@@ -8,14 +8,15 @@
 import {
   ButtonProps,
   ComponentThemeGetter,
+  ElevationDegree,
   SizedData,
-  SurfacePropsBase,
+  SurfaceProps,
   SurfaceTheme,
   ViewStyleGetter,
 } from '@reflex-ui/core';
+import { getElevationStyles } from '@reflex-ui/elevation-md';
 import { ViewStyle } from 'react-native';
 
-import { getMidElevationStylesByInteraction } from '../../../elevation';
 import { getAllVariantsButtonContainerProps } from '../all-variants/container';
 import { getRaisedButtonContainerStyle } from '../raised/container';
 
@@ -78,10 +79,13 @@ export const fabButtonContainerSizedStyle: SizedData<ViewStyle> = {
 };
 
 export const getFabButtonContainerStyle: ViewStyleGetter<
-  SurfacePropsBase
+  SurfaceProps
 > = props => ({
   ...getRaisedButtonContainerStyle(props),
-  ...getMidElevationStylesByInteraction(props.interactionState.type),
+  ...getElevationStyles(
+    props.elevation || ElevationDegree.Mid,
+    props.interactionState.type,
+  ),
   ...(props.size && fabButtonContainerSizedStyle[props.size]),
 });
 

@@ -5,21 +5,27 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { TouchableWithoutFeedbackProps } from 'react-native';
+
 import { InteractionProps } from '../../interaction';
-import { ComponentChildrenProps } from '../ComponentChildrenProps';
-import { ComponentThemeProps } from '../ComponentThemeProps';
 import { SurfacePropsBase } from '../surface/SurfaceProps';
 import { TouchableSurfaceTheme } from './TouchableSurfaceTheme';
+import { TouchableSurfaceVariant } from './TouchableSurfaceVariant';
 
-export type TouchableSurfacePropsBase = InteractionProps & SurfacePropsBase;
+export type TouchableSurfacePropsBase<Props, Theme> = InteractionProps &
+  SurfacePropsBase<Props, Theme> &
+  TouchableWithoutFeedbackProps;
 
-export type TouchableSurfacePropsBaseOptional = Partial<
-  TouchableSurfacePropsBase
+export type TouchableSurfacePropsBaseOptional<Props, Theme> = Partial<
+  TouchableSurfacePropsBase<Props, Theme>
 >;
 
 export interface TouchableSurfaceProps
-  extends ComponentChildrenProps<TouchableSurfaceProps>,
-    ComponentThemeProps<TouchableSurfaceProps, TouchableSurfaceTheme>,
-    TouchableSurfacePropsBase {}
+  extends TouchableSurfacePropsBase<
+    TouchableSurfaceProps,
+    TouchableSurfaceTheme
+  > {
+  readonly variant: TouchableSurfaceVariant;
+}
 
 export type TouchableSurfacePropsOptional = Partial<TouchableSurfaceProps>;

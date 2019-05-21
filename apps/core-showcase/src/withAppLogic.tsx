@@ -7,33 +7,33 @@
 
 import {
   ComponentsTheme,
-  ComponentsThemeContext,
-  defaultBreakpoints,
-  DimensionsHandler,
-  PaletteContext,
+  ComponentsThemeProvider,
+  PaletteProvider,
+  ResponsivenessProvider,
 } from '@reflex-ui/core';
 import {
   blue500Yellow600Palette,
-  // createAnimatedComponentsTheme,
-  createComponentsTheme,
+  createAnimatedComponentsTheme,
+  // createComponentsTheme,
   // deepPurple500TealA700Palette,
+  defaultBreakpoints,
 } from '@reflex-ui/core-md';
 import * as React from 'react';
 
-const mdComponentsTheme: ComponentsTheme = createComponentsTheme();
-// const mdComponentsTheme: ComponentsTheme = createAnimatedComponentsTheme();
+// const mdComponentsTheme: ComponentsTheme = createComponentsTheme();
+const mdComponentsTheme: ComponentsTheme = createAnimatedComponentsTheme();
 
 const withAppLogic = <P extends {}>(
   WrappedComponent: React.ComponentType<P>,
 ): React.ComponentType<P> => {
   const WithAppLogic: React.ComponentType<P> = (props: P): JSX.Element => (
-    <DimensionsHandler breakpoints={defaultBreakpoints}>
-      <PaletteContext.Provider value={blue500Yellow600Palette}>
-        <ComponentsThemeContext.Provider value={mdComponentsTheme}>
+    <ResponsivenessProvider breakpoints={defaultBreakpoints}>
+      <PaletteProvider value={blue500Yellow600Palette}>
+        <ComponentsThemeProvider value={mdComponentsTheme}>
           <WrappedComponent {...props} />
-        </ComponentsThemeContext.Provider>
-      </PaletteContext.Provider>
-    </DimensionsHandler>
+        </ComponentsThemeProvider>
+      </PaletteProvider>
+    </ResponsivenessProvider>
   );
 
   WithAppLogic.displayName = `WithAppLogic(${WrappedComponent.displayName ||

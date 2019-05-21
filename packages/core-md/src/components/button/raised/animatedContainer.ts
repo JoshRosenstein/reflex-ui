@@ -6,56 +6,58 @@
  */
 
 import {
+  BuiltInSimpleComponentProps,
   ButtonProps,
   ComponentThemeGetter,
-  DefaultView,
-  InteractionType,
-  isTouchDevice,
-  SurfacePropsBase,
+  Elevation,
+  ElevationDegree,
+  getColor,
+  suppressPressedState,
+  SurfaceProps,
   SurfaceTheme,
   ViewStyleGetter,
 } from '@reflex-ui/core';
+import { getElevationStyles } from '@reflex-ui/elevation-md';
+// tslint:disable-next-line:max-line-length
+import { createAnimatedRippleElevationView } from '@reflex-ui/ripple-elevation-md';
+import { getSurfaceRippleColor } from '@reflex-ui/ripple-md';
+import { ComponentType } from 'react';
 
-import {
-  ElevationDegree,
-  getLowElevationStylesByInteraction,
-} from '../../../elevation';
-import { getButtonRippleColor } from '../getButtonRippleColor';
-import { withRaiseEffect } from '../withRaiseEffect';
-import { withRippleEffect } from '../withRippleEffect';
+import { getAllVariantsButtonContainerProps } from '../all-variants/container';
 import { getRaisedButtonContainerStyle } from './container';
 
-export const getAnimatedRaisedButtonContainerStyle: ViewStyleGetter<
-  SurfacePropsBase
-> = props => {
-  const updatedProps =
-    props.interactionState.type === InteractionType.Pressed
-      ? {
-          // tslint:disable-next-line:ter-indent
-          ...props,
-          // tslint:disable-next-line:ter-indent
-          interactionState: {
-            ...props.interactionState,
-            type: isTouchDevice
-              ? InteractionType.Enabled
-              : InteractionType.Hovered,
-          },
-          // tslint:disable-next-line:ter-indent
-        }
-      : props;
+/*
+ * Basic memoization implementation.
+ */
+let currentElevation: Elevation;
+let currentComponent: ComponentType<BuiltInSimpleComponentProps<SurfaceProps>>;
+const createComponent = (elevation: Elevation = ElevationDegree.Low) => {
+  if (elevation === currentElevation && currentComponent !== undefined) {
+    return currentComponent;
+  }
 
-  return {
-    ...getRaisedButtonContainerStyle(updatedProps),
-    ...getLowElevationStylesByInteraction(InteractionType.Disabled),
-  };
+  currentElevation = elevation;
+  currentComponent = createAnimatedRippleElevationView<
+    SurfaceProps,
+    SurfaceTheme
+  >(elevation, getSurfaceRippleColor);
+  return currentComponent;
 };
+/**/
+
+export const getAnimatedRaisedButtonContainerStyle: ViewStyleGetter<
+  SurfaceProps
+> = props => ({
+  ...getRaisedButtonContainerStyle(props),
+  ...getElevationStyles(0),
+  backgroundColor: getColor(suppressPressedState(props)),
+});
 
 export const getAnimatedRaisedButtonSurfaceTheme: ComponentThemeGetter<
   ButtonProps,
   SurfaceTheme
 > = () => ({
-  component: withRippleEffect({
-    getRippleColor: getButtonRippleColor,
-  })(withRaiseEffect(ElevationDegree.Low)(DefaultView)),
+  getComponent: props => createComponent(props.elevation),
+  getProps: getAllVariantsButtonContainerProps,
   getStyle: getAnimatedRaisedButtonContainerStyle,
 });

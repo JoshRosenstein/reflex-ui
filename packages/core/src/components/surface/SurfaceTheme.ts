@@ -5,13 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { ViewProps, ViewStyle } from 'react-native';
+import { BuiltInViewTheme } from '../view/ViewTheme';
+import { SurfaceProps } from './SurfaceProps';
 
-import { BuiltInSimpleComponentTheme } from '../SimpleComponentTheme';
-import { SurfacePropsBase } from './SurfaceProps';
-
-export type SurfaceTheme = BuiltInSimpleComponentTheme<
-  SurfacePropsBase,
-  ViewProps,
-  ViewStyle
->;
+export type SurfaceTheme = BuiltInViewTheme<SurfaceProps>;

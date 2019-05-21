@@ -8,25 +8,37 @@
 import { ComponentsTheme } from '@reflex-ui/core';
 
 import { appBarVariantsTheme } from './app-bar/theme';
+import { avatarImageTheme } from './avatar-image/theme';
+import { avatarOverlaySurfaceTheme } from './avatar-overlay-surface/theme';
+import { avatarTheme } from './avatar/theme';
 import { buttonTheme } from './button/theme';
+import { imageTheme } from './image/theme';
 import { listItemTheme } from './list-item/theme';
 import { listTheme } from './list/theme';
+import { overlaySurfaceTheme } from './overlay-surface/theme';
 import { screenTheme } from './screen/theme';
 import { surfaceTheme } from './surface/theme';
 import { rfxSvgVariantsTheme } from './svg/theme';
 import { rfxTextVariantsTheme } from './text/theme';
-import { touchableSurfaceTheme } from './touchable-surface/theme';
+import { touchableSurfaceVariantsTheme } from './touchable-surface/theme';
+import { touchableTheme } from './touchable/theme';
 import { rfxViewTheme } from './view/theme';
 
 export const materialDesignTheme: ComponentsTheme = {
   appBar: appBarVariantsTheme,
+  avatar: avatarTheme,
+  avatarImage: avatarImageTheme,
+  avatarOverlaySurface: avatarOverlaySurfaceTheme,
   button: buttonTheme,
+  image: imageTheme,
   list: listTheme,
   listItem: listItemTheme,
+  overlaySurface: overlaySurfaceTheme,
   screen: screenTheme,
   surface: surfaceTheme,
   svg: rfxSvgVariantsTheme,
   text: rfxTextVariantsTheme,
-  touchableSurface: touchableSurfaceTheme,
+  touchable: touchableTheme,
+  touchableSurface: touchableSurfaceVariantsTheme,
   views: rfxViewTheme,
 };

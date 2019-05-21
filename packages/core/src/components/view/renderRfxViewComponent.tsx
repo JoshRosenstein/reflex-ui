@@ -8,7 +8,7 @@
 import React, { Ref } from 'react';
 import { View, ViewProps } from 'react-native';
 
-import { PaletteColorContext } from '../../color/PaletteColorContext';
+import { PaletteColorProvider } from '../../color/PaletteColor';
 import { extractViewProps } from '../../utils/props';
 import { ComponentChildrenProps } from '../ComponentChildrenProps';
 import { ComponentThemeProps } from '../ComponentThemeProps';
@@ -20,24 +20,25 @@ export interface RfxViewComponentRendererInput<Props> {
   readonly props: Props;
   readonly ref?: Ref<View>;
   readonly shouldProvideColor?: boolean;
+  readonly theme?: BuiltInSimpleComponentTheme<Props, unknown, unknown>;
 }
 
 export const renderRfxViewComponent = <
-  Props extends RfxViewPropsBase &
+  Props extends RfxViewPropsBase<Props, Theme> &
     ComponentThemeProps<Props, Theme> &
     ComponentChildrenProps<Props>,
   Theme extends BuiltInSimpleComponentTheme<Props, unknown, unknown>
 >(
   input: RfxViewComponentRendererInput<Props>,
 ): React.ReactElement => {
-  const { props, ref, shouldProvideColor } = input;
-  const { children, paletteColor, theme } = props;
+  const { props, ref, shouldProvideColor, theme } = input;
+  const { children, paletteColor } = props;
   const viewProps: React.PropsWithChildren<ViewProps> = {
     ...extractViewProps(props),
     children,
   };
   const renderedView = renderViewComponent({
-    Component: theme.component,
+    Component: theme && theme.getComponent && theme.getComponent(props),
     props,
     ref,
     viewProps,
@@ -45,9 +46,9 @@ export const renderRfxViewComponent = <
 
   if (shouldProvideColor) {
     return (
-      <PaletteColorContext.Provider value={paletteColor}>
+      <PaletteColorProvider value={paletteColor}>
         {renderedView}
-      </PaletteColorContext.Provider>
+      </PaletteColorProvider>
     );
   }
 

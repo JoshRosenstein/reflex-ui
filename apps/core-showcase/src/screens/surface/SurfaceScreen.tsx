@@ -13,9 +13,9 @@ import {
   Button,
   ButtonVariant,
   ComponentThemeGetter,
+  ElevationDegree,
   FlexDirection,
   JustifyContent,
-  PaletteContext,
   Paragraph1,
   Paragraph2,
   Row,
@@ -24,9 +24,10 @@ import {
   Surface,
   SurfaceProps,
   SurfaceTheme,
+  usePalette,
 } from '@reflex-ui/core';
 import { MenuIcon } from '@reflex-ui/icons-md';
-import React, { useContext } from 'react';
+import React from 'react';
 import { ScrollView, View } from 'react-native';
 
 const onButtonPress = () => {
@@ -64,7 +65,7 @@ const Square = () => (
 );
 
 const SurfaceScreen: React.SFC<{}> = (): JSX.Element => {
-  const palette = useContext(PaletteContext);
+  const { palette } = usePalette();
 
   return (
     <Screen>
@@ -112,11 +113,15 @@ const SurfaceScreen: React.SFC<{}> = (): JSX.Element => {
           </Surface>
         </Row>
         <Paragraph2 margin={Size.M}>
-          {'<Surface paletteColor={palette.primary}>'}
+          {[
+            '<Surface elevation={ElevationDegree.Low}',
+            'paletteColor={palette.primary}>',
+          ].join(' ')}
         </Paragraph2>
         <Row>
           <Surface
             alignContent={AlignContent.Center}
+            elevation={ElevationDegree.Low}
             justifyContent={JustifyContent.Center}
             margin={Size.M}
             paletteColor={palette.primary}

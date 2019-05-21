@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "build/dist",
+    "rootDir": "src"
+  },
+  "extends": "../../tsconfig.json",
+  "include": ["src"],
+  "references": [
+    { "path": "../core/tsconfig.json" },
+    { "path": "../elevation-md/tsconfig.json" },
+    { "path": "../ripple-md/tsconfig.json" }
+  ]
+}

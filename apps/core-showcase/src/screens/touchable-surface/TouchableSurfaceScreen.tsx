@@ -7,26 +7,31 @@
 
 import {
   AlignContent,
+  AlignItems,
   AppBar,
   AppBarTitle,
   AppBarVariant,
   Button,
   ButtonVariant,
+  Column,
   ComponentThemeGetter,
   JustifyContent,
-  PaletteContext,
   Paragraph1,
   Paragraph2,
+  RfxViewPropsOptional,
   Row,
   Screen,
   Size,
   TouchableSurface,
   TouchableSurfaceProps,
   TouchableSurfaceTheme,
+  TouchableSurfaceVariant,
+  usePalette,
+  useResponsiveness,
 } from '@reflex-ui/core';
 import { MenuIcon } from '@reflex-ui/icons-md';
-import React, { useContext } from 'react';
-import { ScrollView } from 'react-native';
+import React from 'react';
+import { Image, ScrollView } from 'react-native';
 
 const onButtonPress = () => {
   // tslint:disable-next-line:no-console
@@ -71,8 +76,37 @@ const getPatchTheme: ComponentThemeGetter<
   };
 };
 
+const TouchableImage = (props: RfxViewPropsOptional) => {
+  const { palette } = usePalette();
+  const { breakpoints, dimensions } = useResponsiveness();
+  const isLargeHandset = dimensions.window.width >= breakpoints.largeHandset;
+  const alignItems = isLargeHandset ? AlignItems.FlexStart : AlignItems.Center;
+  const marginHorizontal = isLargeHandset ? Size.M : 0;
+
+  return (
+    <Column
+      alignItems={alignItems}
+      marginHorizontal={marginHorizontal}
+      marginVertical={Size.XXL}
+      {...props}
+    >
+      <TouchableSurface
+        contained={false}
+        invertColor
+        paletteColor={palette.primary}
+        variant={TouchableSurfaceVariant.Overlay}
+      >
+        <Image
+          source={require('./flower.jpg')}
+          style={{ height: 215, width: 300 }}
+        />
+      </TouchableSurface>
+    </Column>
+  );
+};
+
 const TouchableSurfaceScreen: React.SFC<{}> = (): JSX.Element => {
-  const palette = useContext(PaletteContext);
+  const { palette } = usePalette();
 
   return (
     <Screen>
@@ -146,6 +180,7 @@ const TouchableSurfaceScreen: React.SFC<{}> = (): JSX.Element => {
             <Paragraph1>Touch me! (contained=false)</Paragraph1>
           </TouchableSurface>
         </Row>
+        <TouchableImage />
       </ScrollView>
     </Screen>
   );
